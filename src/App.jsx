@@ -1,119 +1,106 @@
 import React, { useState, useEffect } from 'react';
-import './App.css';
+import CarDetailsModal from './CarDetailsModal';
+import { FaCar, FaParking, FaClock, FaMoneyBillWave } from 'react-icons/fa';
 
-// Static data to simulate API responses
-const staticCarData = [
-  { licensePlate: 'ABC123', entryTime: '2023-04-15 09:30', ownerName: 'John Doe' },
-  { licensePlate: 'XYZ789', entryTime: '2023-04-15 10:15', ownerName: 'Jane Smith' },
-  { licensePlate: 'DEF456', entryTime: '2023-04-15 11:00', ownerName: 'Bob Johnson' },
-];
-
-function App() {
+const HomePage = () => {
   const [cars, setCars] = useState([]);
-  const [newCar, setNewCar] = useState({ licensePlate: '', ownerName: '' });
-  const totalParkingSlots = 12;
+  const [selectedCar, setSelectedCar] = useState(null);
+  const totalSlots = 10;
 
   useEffect(() => {
-    // Simulate fetching car data from an API
-    setCars(staticCarData);
+    fetchCars();
   }, []);
 
-  const addCar = () => {
-    if (newCar.licensePlate && newCar.ownerName) {
-      const carToAdd = {
-        ...newCar,
-        entryTime: new Date().toLocaleString(),
-      };
-      setCars([...cars, carToAdd]);
-      setNewCar({ licensePlate: '', ownerName: '' });
-    }
+  const fetchCars = async () => {
+    // Replace with your actual API call
+    const response = await fetch('https://ioe-node-backend-escz.onrender.com/cars',);
+    const data = await response.json();
+    setCars(data);
   };
 
-  const removeCar = (licensePlate) => {
-    setCars(cars.filter(car => car.licensePlate !== licensePlate));
+  const handleCarClick = (car) => {
+    setSelectedCar(car);
+  };
+
+  const closeModal = () => {
+    setSelectedCar(null);
+  };
+
+  const formatTime = (timeString) => {
+    if (!timeString) return 'N/A';
+    const options = { 
+      timeZone: 'Asia/Kolkata',
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric', 
+      hour: '2-digit', 
+      minute: '2-digit',
+      hour12: true
+    };
+    return new Date(timeString).toLocaleString('en-IN', options);
   };
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold text-blue-600 mb-8">Parking System Dashboard</h1>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <div className="bg-blue-100 p-6 rounded-lg shadow">
-          <h2 className="text-2xl font-semibold mb-2">
-            <span className="mr-2">🚗</span> Parked Cars: {cars.length} / {totalParkingSlots}
-          </h2>
-          {/* <p className="text-lg">Available Slots: {totalParkingSlots - cars.length}</p> */}
+      <h1 className="text-3xl font-bold mb-6 text-gray-800 flex items-center">
+        <FaParking className="mr-2 text-blue-600" /> Parking Management
+      </h1>
+      
+      {/* Slot information */}
+      <div className="flex justify-between mb-6">
+        <div className="bg-blue-100 p-4 rounded-lg flex items-center">
+          <FaCar className="text-2xl mr-2 text-blue-600" />
+          <p className="text-lg font-semibold">Used Slots: {cars.length}</p>
         </div>
-
-        <div className="bg-green-100 p-6 rounded-lg shadow">
-        <h2 className="text-2xl font-semibold mb-2">
-            <span className="mr-2">🚗</span> Available Slots: {totalParkingSlots - cars.length}
-          </h2>
-          {/* <h2 className="text-2xl font-semibold mb-4">
-            <span className="mr-2">➕</span> Add New Car
-          </h2>
-          <input
-            type="text"
-            placeholder="License Plate"
-            value={newCar.licensePlate}
-            onChange={(e) => setNewCar({...newCar, licensePlate: e.target.value})}
-            className="border p-2 mr-2 rounded"
-          />
-          <input
-            type="text"
-            placeholder="Owner Name"
-            value={newCar.ownerName}
-            onChange={(e) => setNewCar({...newCar, ownerName: e.target.value})}
-            className="border p-2 mr-2 rounded"
-          />
-          <button 
-            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
-            onClick={addCar}
-          >
-            Add Car
-          </button> */}
+        <div className="bg-green-100 p-4 rounded-lg flex items-center">
+          <FaParking className="text-2xl mr-2 text-green-600" />
+          <p className="text-lg font-semibold">Available Slots: {totalSlots - cars.length}</p>
         </div>
       </div>
 
-      <div className="bg-white shadow overflow-hidden rounded-lg">
-        <table className="min-w-full">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <span className="mr-2">👤</span> Owner Name
+      {/* Car details table */}
+      <div className="overflow-x-auto">
+        <table className="w-full table-auto border-collapse border border-gray-200 mb-6">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="border border-gray-200 px-4 py-2 text-center">
+                <div className="flex items-center justify-center">
+                  <FaCar className="mr-2" /> Car Number
+                </div>
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <span className="mr-2">🚗</span> License Plate
+              <th className="border border-gray-200 px-4 py-2 text-center">
+                <div className="flex items-center justify-center">
+                  <FaClock className="mr-2" /> In Time
+                </div>
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <span className="mr-2">🕒</span> Entry Time
+              <th className="border border-gray-200 px-4 py-2 text-center">
+                <div className="flex items-center justify-center">
+                  <FaClock className="mr-2" /> Out Time
+                </div>
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <span className="mr-2">🗑️</span> Action
+              <th className="border border-gray-200 px-4 py-2 text-center">
+                <div className="flex items-center justify-center">
+                  <FaMoneyBillWave className="mr-2" /> Cost
+                </div>
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody>
             {cars.map((car) => (
-              <tr key={car.licensePlate}>
-                <td className="px-6 py-4 whitespace-nowrap">{car.ownerName}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{car.licensePlate}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{car.entryTime}</td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <button 
-                    className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
-                    onClick={() => removeCar(car.licensePlate)}
-                  >
-                    Remove
-                  </button>
-                </td>
+              <tr key={car._id} className="hover:bg-gray-50 cursor-pointer" onClick={() => handleCarClick(car)}>
+                <td className="border border-gray-200 px-4 py-2 text-center">{car.carNumber}</td>
+                <td className="border border-gray-200 px-4 py-2 text-center">{formatTime(car.inTime)}</td>
+                <td className="border border-gray-200 px-4 py-2 text-center">{formatTime(car.outTime)}</td>
+                <td className="border border-gray-200 px-4 py-2 text-center">{car.cost || 'N/A'}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
+      {selectedCar && <CarDetailsModal car={selectedCar} onClose={closeModal} />}
     </div>
   );
-}
+};
 
-export default App;
+export default HomePage;
