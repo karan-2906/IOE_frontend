@@ -13,10 +13,15 @@ const HomePage = () => {
 
   const fetchCars = async () => {
     // Replace with your actual API call
-    const response = await fetch('https://ioe-node-backend-escz.onrender.com/cars',);
+    const response = await fetch('https://ioe-node-backend-escz.onrender.com/cars');
     const data = await response.json();
-    setCars(data);
+    // Sort cars by inTime in descending order (most recent first)
+    const sortedCars = data.sort((a, b) => new Date(b.inTime) - new Date(a.inTime));
+    setCars(sortedCars);
   };
+
+  // Calculate parked cars count
+  const parkedCarsCount = cars.filter(car => car.isParked).length;
 
   const handleCarClick = (car) => {
     setSelectedCar(car);
@@ -46,15 +51,15 @@ const HomePage = () => {
         <FaParking className="mr-2 text-blue-600" /> Parking Management
       </h1>
       
-      {/* Slot information */}
+      {/* Updated Slot information */}
       <div className="flex justify-between mb-6">
         <div className="bg-blue-100 p-4 rounded-lg flex items-center">
           <FaCar className="text-2xl mr-2 text-blue-600" />
-          <p className="text-lg font-semibold">Used Slots: {cars.length}</p>
+          <p className="text-lg font-semibold">Used Slots: {parkedCarsCount}</p>
         </div>
         <div className="bg-green-100 p-4 rounded-lg flex items-center">
           <FaParking className="text-2xl mr-2 text-green-600" />
-          <p className="text-lg font-semibold">Available Slots: {totalSlots - cars.length}</p>
+          <p className="text-lg font-semibold">Available Slots: {totalSlots - parkedCarsCount}</p>
         </div>
       </div>
 
