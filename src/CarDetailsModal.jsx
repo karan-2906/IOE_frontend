@@ -1,6 +1,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCar, faUser, faClock, faSignInAlt, faSignOutAlt, faMapMarkerAlt, faPalette, faTags, faGasPump, faIndustry, faCog } from '@fortawesome/free-solid-svg-icons';
+import { faCar, faUser, faClock, faSignInAlt, faSignOutAlt, faMapMarkerAlt, faPalette, faTags, faGasPump, faIndustry, faCog, faDollarSign } from '@fortawesome/free-solid-svg-icons';
+import QRCode from 'react-qr-code'; // Import QRCode component
 
 const CarDetailsModal = ({ car, onClose }) => {
   if (!car) return null;
@@ -17,6 +18,7 @@ const CarDetailsModal = ({ car, onClose }) => {
     { icon: faSignInAlt, label: 'In Time', value: car.inTime ? new Date(car.inTime).toLocaleString() : 'N/A' },
     { icon: faSignOutAlt, label: 'Out Time', value: car.outTime ? new Date(car.outTime).toLocaleString() : 'N/A' },
     { icon: faClock, label: 'Parking Duration', value: car.lastParkingDuration ? `${car.lastParkingDuration} minutes` : 'N/A' },
+    { icon: faDollarSign, label: 'Cost', value: car.cost }, // Add cost entry
   ];
 
   return (
@@ -33,6 +35,11 @@ const CarDetailsModal = ({ car, onClose }) => {
                 <FontAwesomeIcon icon={item.icon} className="text-blue-500 w-6" />
                 <span className="font-semibold mr-2">{item.label}:</span>
                 <span className="text-gray-700">{item.value}</span>
+                {item.label === 'Cost' && item.value !== null && ( // Check for cost and display QR code
+                  <div className="ml-4">
+                    <QRCode value={`upi://pay?pa=karangandhi486-1@okicici&pn=Karan%20Gandhi&aid=uGICAgICPktnPPA&am=${car.cost}`} /> {/* Display QR code */}
+                  </div>
+                )}
               </div>
             )
           ))}
