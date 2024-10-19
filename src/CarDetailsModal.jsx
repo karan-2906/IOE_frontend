@@ -34,12 +34,14 @@ const CarDetailsModal = ({ car, onClose }) => {
               <div key={index} className="flex items-center">
                 <FontAwesomeIcon icon={item.icon} className="text-blue-500 w-6" />
                 <span className="font-semibold mr-2">{item.label}:</span>
+<div class name="lg:flex ">
                 <span className="text-gray-700">{item.value}</span>
                 {item.label === 'Cost' && item.value !== null && ( // Check for cost and display QR code
                   <div className="ml-4">
                     <QRCode value={`upi://pay?pa=karangandhi486-1@okicici&pn=Karan%20Gandhi&aid=uGICAgICPktnPPA&am=${car.cost}`} /> {/* Display QR code */}
                   </div>
                 )}
+</div>
               </div>
             )
           ))}
