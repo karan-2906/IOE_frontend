@@ -1,6 +1,6 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCar, faUser, faClock, faSignInAlt, faSignOutAlt, faMapMarkerAlt, faPalette, faTags, faGasPump, faIndustry, faCog, faDollarSign } from '@fortawesome/free-solid-svg-icons';
+import { faCar, faUser, faClock, faSignInAlt, faSignOutAlt, faMapMarkerAlt, faPalette, faTags, faGasPump, faIndustry, faCog, faDollarSign,fas fa-rupee-sign } from '@fortawesome/free-solid-svg-icons';
 import QRCode from 'react-qr-code'; // Import QRCode component
 
 const CarDetailsModal = ({ car, onClose }) => {
@@ -18,7 +18,7 @@ const CarDetailsModal = ({ car, onClose }) => {
     { icon: faSignInAlt, label: 'In Time', value: car.inTime ? new Date(car.inTime).toLocaleString() : 'N/A' },
     { icon: faSignOutAlt, label: 'Out Time', value: car.outTime ? new Date(car.outTime).toLocaleString() : 'N/A' },
     { icon: faClock, label: 'Parking Duration', value: car.lastParkingDuration ? `${car.lastParkingDuration} minutes` : 'N/A' },
-    { icon: faDollarSign, label: 'Cost', value: car.cost }, // Add cost entry
+    { icon: fas fa-rupee-sign, label: 'Cost', value: `₹${car.cost}` }, // Add cost entry
   ];
 
   return (
