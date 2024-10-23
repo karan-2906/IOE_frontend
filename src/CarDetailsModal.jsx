@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCar, faUser, faClock, faSignInAlt, faSignOutAlt, faMapMarkerAlt, faPalette, faTags, faGasPump, faIndustry, faCog, faRupeeSign, faQrcode } from '@fortawesome/free-solid-svg-icons';
 import QRCode from 'react-qr-code'; // Import QRCode component
 
 const CarDetailsModal = ({ car, onClose }) => {
-  if (!car) return null;
+  // if (!car) return null;
+  const [Cost, setCost] = useState(car.cost);
 
   const carDetails = [
     { icon: faUser, label: 'Owner', value: car.ownerName },
@@ -19,21 +20,17 @@ const CarDetailsModal = ({ car, onClose }) => {
     { icon: faSignOutAlt, label: 'Out Time', value: car.outTime ? new Date(car.outTime).toLocaleString() : 'N/A' },
     { icon: faClock, label: 'Parking Duration', value: car.lastParkingDuration ? `${car.lastParkingDuration} minutes` : 'N/A' },
     { icon: faRupeeSign, label: 'Cost', value: `₹${car.cost}` },
-    { 
-      icon: faQrcode, 
-      label: 'Payment', 
-      value: car.cost !== null ? <QRCode value={`upi://pay?pa=karangandhi486-1@okicici&pn=Karan%20Gandhi&aid=uGICAgICPktnPPA&am=${car.cost}`} /> : null 
-    },
   ];
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full overflow-hidden">
+      <div className="bg-white rounded-lg shadow-xl mt-10 w-fit overflow-scroll">
         <div className="bg-blue-600 text-white px-6 py-4 flex justify-between items-center">
           <h2 className="text-2xl font-bold"><FontAwesomeIcon icon={faCar} className="mr-2" /> Car Details</h2>
           <button className="text-2xl hover:text-gray-300 transition-colors" onClick={onClose}>&times;</button>
         </div>
-        <div className="p-6 space-y-4">
+        <div className="flex flex-col-reverse md:flex-row w-full">
+          <div className='p-6 gap-4 space-y-4'>
           {carDetails.map((item, index) => (
             item.value && (
               <div key={index} className="flex items-center">
@@ -43,6 +40,13 @@ const CarDetailsModal = ({ car, onClose }) => {
               </div>
             )
           ))}
+          </div>
+          {car.cost !== null && (
+            <div className='p-6'>
+              <p className='text-lg font-semibold text-center mb-4'>Payment QR Code</p>
+              <QRCode value={`upi://pay?pa=karangandhi486-1@okicici&pn=Karan%20Gandhi&aid=uGICAgICPktnPPA&am=${car.cost}`} />
+            </div>
+          )}
         </div>
       </div>
     </div>
