@@ -15,8 +15,13 @@ const HomePage = () => {
     // Replace with your actual API call
     const response = await fetch('https://ioe-node-backend-escz.onrender.com/cars');
     const data = await response.json();
-    // Sort cars by inTime in descending order (most recent first)
-    const sortedCars = data.sort((a, b) => new Date(b.inTime) - new Date(a.inTime));
+    // Sort cars: first by absence of outTime, then by outTime in descending order
+    const sortedCars = data.sort((a, b) => {
+        if (!a.outTime && b.outTime) return -1;
+        if (a.outTime && !b.outTime) return 1;
+        if (!a.outTime && !b.outTime) return 0;
+        return new Date(b.outTime) - new Date(a.outTime);
+    });
     setCars(sortedCars);
   };
 
